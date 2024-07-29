@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 
 export default function Purchased() {
     const [purchased, setPurchased] = useState([]);
-    const url = "http://localhost:8000";
+    const url = "https://e-learning-website-server.onrender.com";
     console.log(purchased);
 
     useEffect(() => {
