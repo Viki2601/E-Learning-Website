@@ -9,8 +9,6 @@ import Cookies from 'js-cookie';
 
 export default function Login() {
     const url = "https://e-learning-website-server.onrender.com";
-    const [captchaval, setCaptchaVal] = useState(null);
-
     const [form, setForm] = useState({
         email: '',
         password: ''
@@ -20,30 +18,26 @@ export default function Login() {
         e.preventDefault();
 
         try {
-            if (!captchaval) {
-                toast.error("Captcha is required")
-            } else {
-                await axios.post(`${url}/login`, {
-                    form
-                })
-                    .then(res => {
-                        if (res.data === "loginPass") {
-                            Cookies.set("email", form.email, { expires: 7 })
-                            toast.success("Successfully Login...")
-                        }
-                        else if (res.data === "nouser") {
-                            toast.error("The Email is not registered");
-                        }
-                        else if (res.data === "loginFail") {
-                            toast.error("Invalid Credential");
-                        }
-                        else if (res.data === "fail") {
-                            toast.error("Something went Wrong!");
-                        }
-                    }).catch(e => {
+            await axios.post(`${url}/login`, {
+                form
+            })
+                .then(res => {
+                    if (res.data === "loginPass") {
+                        Cookies.set("email", form.email, { expires: 7 })
+                        toast.success("Successfully Login...")
+                    }
+                    else if (res.data === "nouser") {
+                        toast.error("The Email is not registered");
+                    }
+                    else if (res.data === "loginFail") {
+                        toast.error("Invalid Credential");
+                    }
+                    else if (res.data === "fail") {
                         toast.error("Something went Wrong!");
-                    })
-            }
+                    }
+                }).catch(e => {
+                    toast.error("Something went Wrong!");
+                })
         }
         catch (e) {
             toast.error("Something went Wrong!");
@@ -65,11 +59,6 @@ export default function Login() {
                             <input value={form.password} onChange={(event) => setForm({ ...form, [event.target.name]: event.target.value })} required type="password" id="password" name="password" class="w-full rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900 text-base outline-none text-gray-900 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" />
                         </div>
 
-                        <ReCAPTCHA
-                            sitekey='6LfA2-8pAAAAAOFjPZxNQFaCIxJ1FligEG9GYYfG'
-                            onChange={(value) => { setCaptchaVal(value) }}
-                        />
-
                         <input class="mt-3 cursor-pointer text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg" type='submit' value='Submit' />
                         <p className='text-base text-blue-700 mt-3'><Link to={'/forgotpassword'}>Forgot Password?</Link></p>
                         <p className='text-base mt-3'>Don't have an account?</p>
@@ -79,7 +68,7 @@ export default function Login() {
                     {/* </div> */}
                 </section>
             </form>
-            <ToastContainer/>
+            <ToastContainer />
         </div>
     )
 }
