@@ -48,10 +48,10 @@ export default function Home() {
                                             </div>
                                             <div className={`grid flex-shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8 ${animate ? 'animate-slideUp' : ''}`}>
                                                 <div className="h-64 w-44 overflow-hidden rounded-lg">
-                                                    <img src="https://zidiolearning.in/public/images/20240303095626image_240x240header1_hero_image1374.jpg" className="h-full w-full object-cover object-center" />
+                                                    <img src="https://cdn.leverageedu.com/blog/wp-content/uploads/2020/05/20191333/Online-Learning-Platforms.png" className="h-full w-full object-cover object-center" />
                                                 </div>
                                                 <div className="h-64 w-44 overflow-hidden rounded-lg">
-                                                    <img src="https://zidiolearning.in/public/images/20240303095626image_240x240header1_hero_image1374.jpg" className="h-full w-full object-cover object-center" />
+                                                    <img src="https://distance-educator.com/wp-content/uploads/virtual_school_Learner.jpg" className="h-full w-full object-cover object-center" />
                                                 </div>
                                             </div>
                                         </div>
