@@ -12,7 +12,7 @@ import { FaChevronDown, FaChevronUp, FaPen } from 'react-icons/fa';
 export default function AdminPage() {
     // Fetching User Mail from Cookies
     const [cookieVal] = useState(Cookies.get('email'));
-    const url = "http://localhost:8000";
+    const url = "https://e-learning-website-server.onrender.com";
 
     // Views, Popup, Display setting details
     const [pendingRequests, setPendingRequests] = useState([]);
