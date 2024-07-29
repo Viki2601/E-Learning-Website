@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
 
 
 export default function Signup() {
-    const url = "http://localhost:8000";
+    const url = "https://e-learning-website-server.onrender.com";
     const [captchaval, setCaptchaVal] = useState(null);
     const navigate = useNavigate();
     const [form, setForm] = useState({
