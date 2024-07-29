@@ -7,7 +7,7 @@ const stripe = require('stripe')(process.env.STRIPE_KEY);
 const { userCollection, courseCollection, cartCollection, orderCollection } = require('./mongo');
 const PORT = process.env.PORT || 8000;
 const multer = require('multer');
-const url = "http://localhost:3000";
+const url = "https://e-learning-website-client.onrender.com";
 const path = require('path'); const { error } = require("console");
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
