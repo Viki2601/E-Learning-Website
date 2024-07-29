@@ -9,7 +9,7 @@ import { FaPen } from 'react-icons/fa';
 
 export default function MyAccount() {
     const [cookieVal] = useState(Cookies.get('email'));
-    const url = "http://localhost:8000"
+    const url = "https://e-learning-website-server.onrender.com"
     const [data, setData] = useState('');
     const [settings, setSettings] = useState(false);
     const [isTeacherApproved, setIsTeacherApproved] = useState(false);
