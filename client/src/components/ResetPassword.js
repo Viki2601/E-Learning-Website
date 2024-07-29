@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 
 export default function ResetPassword() {
     const navigate = useNavigate()
-    const url = "http://localhost:8000";
+    const url = "https://e-learning-website-server.onrender.com";
     const [password, setPassword] = useState('')
     const [repassword, setRepassword] = useState('')
 
