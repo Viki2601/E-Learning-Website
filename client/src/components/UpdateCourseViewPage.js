@@ -11,7 +11,7 @@ import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 
 export default function UpdateCourseViewPage() {
     const history = useNavigate();
-    const url = "http://localhost:8000";
+    const url = "https://e-learning-website-server.onrender.com";
     const [cookieVal] = useState(Cookies.get('email'));
     const [progress, setProgress] = useState(0);
     const [data, setData] = useState([]);
