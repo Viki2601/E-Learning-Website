@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import ReCAPTCHA from 'react-google-recaptcha'
 import axios from "axios"
 import { ToastContainer, toast } from 'react-toastify';
 import Cookies from "js-cookie";
@@ -8,7 +7,6 @@ import Cookies from "js-cookie";
 
 export default function Signup() {
     const url = "https://e-learning-website-server.onrender.com";
-    const [captchaval, setCaptchaVal] = useState(null);
     const navigate = useNavigate();
     const [form, setForm] = useState({
         name: "",
@@ -25,9 +23,6 @@ export default function Signup() {
             }
             else if (form.password !== form.repassword) {
                 toast.error("Password dosen't match");
-            }
-            else if (!captchaval) {
-                toast.error("Captcha is required");
             }
             else {
                 await axios.post(`${url}/signup`, {
@@ -75,11 +70,6 @@ export default function Signup() {
                             <label for="repassword" class="leading-7 text-sm text-gray-400">Confirm Password</label>
                             <input required value={form.repassword} onChange={(e) => { setForm({ ...form, [e.target.name]: e.target.value }) }} type="password" id="repassword" name="repassword" class="w-full rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900 text-base outline-none text-gray-900 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" />
                         </div>
-
-                        <ReCAPTCHA
-                            sitekey='6LfA2-8pAAAAAOFjPZxNQFaCIxJ1FligEG9GYYfG'
-                            onChange={(value) => { setCaptchaVal(value) }}
-                        />
 
                         <input class="mt-3 cursor-pointer text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg" type='submit' value='Submit' />
 
