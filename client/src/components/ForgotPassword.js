@@ -15,7 +15,7 @@ export default function ForgotPassword() {
     const [otp, setOtp] = useState(null);
     const [progress, setProgress] = useState(0);
     const navigate = useNavigate();
-    const url = "http://localhost:8000";
+    const url = "https://e-learning-website-server.onrender.com";
 
     const [showPopup, setShowPopup] = useState(false);
     const [otpValue, setOtpValue] = useState(null);
