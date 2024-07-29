@@ -14,7 +14,7 @@ export default function SingleViewPage() {
     const [course, setCourse] = useState(null);
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
-    const url = "http://localhost:8000"
+    const url = "https://e-learning-website-server.onrender.com"
 
     useEffect(() => {
         getCourseById();
