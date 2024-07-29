@@ -10,7 +10,7 @@ import axios from 'axios';
 
 export default function Navbar() {
     const [open, setOpen] = useState(false)
-    const url = "http://localhost:8000";
+    const url = "https://e-learning-website-server.onrender.com";
     const [cartItems, setCartItems] = useState([]);
     const [subTotal, setSubTotal] = useState(0)
     const navigate = useNavigate();
