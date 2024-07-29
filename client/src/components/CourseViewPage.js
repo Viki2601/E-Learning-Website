@@ -10,7 +10,7 @@ export default function CourseViewPage() {
     const [filteredCourses, setFilteredCourses] = useState([]);
     const [selectedOption, setSelectedOption] = useState('All Courses');
     const [animate, setAnimate] = useState(false);
-    const url = "http://localhost:8000"
+    const url = "https://e-learning-website-server.onrender.com"
 
     useEffect(() => {
         setAnimate(true);
