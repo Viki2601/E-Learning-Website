@@ -8,7 +8,7 @@ import Cookies from 'js-cookie';
 
 
 export default function Login() {
-    const url = "http://localhost:8000";
+    const url = "https://e-learning-website-server.onrender.com";
     const [captchaval, setCaptchaVal] = useState(null);
 
     const [form, setForm] = useState({
