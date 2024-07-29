@@ -6,7 +6,7 @@ import LoadingBar from 'react-top-loading-bar'
 
 export default function AddCourse() {
     const history = useNavigate();
-    const url = "http://localhost:8000";
+    const url = "https://e-learning-website-server.onrender.com";
     const [progress, setProgress] = useState(0)
     const [form, setForm] = useState({
         name: '',
