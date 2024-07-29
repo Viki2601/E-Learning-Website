@@ -10,7 +10,7 @@ import { loadStripe } from '@stripe/stripe-js';
 export default function Checkout() {
     const [cartItems, setCartItems] = useState([]);
     const [subTotal, setSubTotal] = useState(0);
-    const url = "http://localhost:8000";
+    const url = "https://e-learning-website-server.onrender.com";
 
     useEffect(() => {
         fetchCartItems();
