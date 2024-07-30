@@ -54,6 +54,7 @@ export default function Navbar() {
     // Logout Call
     const logout = () => {
         Cookies.remove('email');
+        navigate("/login");
     };
 
 
