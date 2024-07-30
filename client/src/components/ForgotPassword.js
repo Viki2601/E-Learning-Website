@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import ReCAPTCHA from 'react-google-recaptcha'
 import axios from "axios"
 import { ToastContainer, toast } from 'react-toastify'
 import Cookies from 'js-cookie';
@@ -10,7 +9,6 @@ import LoadingBar from 'react-top-loading-bar'
 
 export default function ForgotPassword() {
 
-    const [captchaval, setCaptchaVal] = useState(null);
     const [email, setEmail] = useState('');
     const [otp, setOtp] = useState(null);
     const [progress, setProgress] = useState(0);
@@ -30,18 +28,11 @@ export default function ForgotPassword() {
         e.preventDefault();
 
         try {
-            if (!captchaval) {
-                toast.error("Captcha is required")
-            } else {
-
                 let OTP = '';
                 for (let i = 0; i < 6; i++) {
                     OTP += digits[Math.floor(Math.random() * 10)]
-                }
                 setOtp(OTP);
-
                 setProgress(50)
-
                 await axios.post(`${url}/sendEmail`, { email, OTP })
                     .then(res => {
                         if (res.data === 'pass') {
@@ -113,11 +104,6 @@ export default function ForgotPassword() {
                             <label for="email" class="leading-7 text-sm text-gray-400">Email</label>
                             <input onChange={(e) => { setEmail(e.target.value) }} required type="email" id="email" name="email" class="w-full rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900 text-base outline-none text-gray-100 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" />
                         </div>
-
-                        <ReCAPTCHA
-                            sitekey='6LfA2-8pAAAAAOFjPZxNQFaCIxJ1FligEG9GYYfG'
-                            onChange={(value) => { setCaptchaVal(value) }}
-                        />
 
                         <input class="mt-3 cursor-pointer text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg" type='submit' value='Submit' />
                         <p className='text-base text-blue-700 mt-3'><Link to={'/login'}>Login</Link></p>
