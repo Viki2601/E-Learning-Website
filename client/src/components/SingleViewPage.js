@@ -55,6 +55,31 @@ export default function SingleViewPage() {
         }
     };
 
+    const addToWishlist = async () => {
+        try {
+            const cookieVal = Cookies.get('email');
+            if (!cookieVal) {
+                toast.warn('Login to Continue...');
+                navigate('/login');
+            } else {
+                setProgress(50);
+                const res = await axios.post(`${url}/addToWishlist`, { email: cookieVal, course: courseId });
+                if (res.data === 'pass') {
+                    toast.success('Course added to wishlist');
+                } else if (res.data === 'alreadyAdded') {
+                    toast.warn('Already added to wishlist');
+                } else if (res.data === 'fail') {
+                    toast.error('Something went wrong!');
+                }
+                setProgress(70);
+                setProgress(100);
+            }
+        } catch (e) {
+            toast.error('Something went wrong!');
+            setProgress(100);
+        }
+    };
+
     const submitReview = async () => {
         try {
             const userId = Cookies.get('email'); // Assume user ID is stored in cookies
@@ -132,7 +157,7 @@ export default function SingleViewPage() {
                                     <div className="flex">
                                         <span className="title-font font-medium text-2xl text-gray-900">₹{course.price}.00</span>
                                         <button onClick={addToCart} className="flex ml-auto text-white bg-gray-900 border-0 py-2 px-6 focus:outline-none hover:bg-gray-600 rounded-lg">Add to Cart</button>
-                                        <button className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
+                                        <button onClick={addToWishlist} className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
                                             <svg fill="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-5 h-5" viewBox="0 0 24 24">
                                                 <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>
                                             </svg>
