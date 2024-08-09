@@ -145,6 +145,16 @@ const reviewCollection = mongoose.model("reviewCollection", reviewSchema)
 
 
 
+// Wishlist SCHEMA DETAILS
+const savedSchema = new mongoose.Schema({
+    email: {
+        type: String,
+    },
+    courses: {
+        type: ObjectId,
+        ref: 'courseCollection',
+    },
+}, { timestamps: true });
 
 // CART SCHEMA DETAILS
 const cartSchema = new mongoose.Schema({
@@ -175,6 +185,7 @@ const orderSchema = new mongoose.Schema({
 
 // SETTING SCHEMAS TO MONGODB USING MONGOOSE.MODEL()
 const userCollection = mongoose.model("userCollection", userSchema)
+const savedCollection = mongoose.model("savedCollection", savedSchema)
 const cartCollection = mongoose.model("cartCollection", cartSchema)
 const orderCollection = mongoose.model("orderCollection", orderSchema)
 
@@ -185,6 +196,7 @@ const collection = {
     userCollection,
     courseCollection,
     reviewCollection,
+    savedCollection,
     cartCollection,
     orderCollection
 };
