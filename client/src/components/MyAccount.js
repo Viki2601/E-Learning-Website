@@ -164,7 +164,7 @@ export default function MyAccount() {
     const removeWishlistedCourse = async (courseId) => {
         const email = Cookies.get("email");
         try {
-            const res = await axios.post(`${url1}/removeFromWishlist`, { email: email, courseId: courseId });
+            const res = await axios.post(`${url}/removeFromWishlist`, { email: email, courseId: courseId });
             if (res.data === "pass") {
                 fetchWishlistedCourse();
             }
