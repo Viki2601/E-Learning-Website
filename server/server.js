@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const express = require("express");
 const nodemailer = require("nodemailer");
 const stripe = require('stripe')(process.env.STRIPE_KEY);
-const { userCollection, courseCollection, cartCollection, orderCollection } = require('./mongo');
+const { userCollection, courseCollection, cartCollection, orderCollection, savedCollection } = require('./mongo');
 const PORT = process.env.PORT || 8000;
 const multer = require('multer');
 const url = "https://e-learning-website-client.onrender.com";
@@ -182,6 +182,23 @@ app.post("/addReview", async (req, res) => {
 });
 
 
+app.post("/addToWishlist", async (req, res) => {
+    const { email, course } = req.body;
+    try {
+        const cart = await savedCollection.findOne({ email: email, courses: course });
+        if (!cart) {
+            await savedCollection.insertMany({ email: email, courses: course })
+            res.json("pass");
+        } else {
+            res.json("alreadyAdded");
+        }
+    } catch (e) {
+        console.log(e);
+        res.json("fail");
+    };
+});
+
+
 // Cart Section like Adding Course to Cart, Viewing Course from Cart, Removing Course from Cart and Checkout.
 // Course cart page API
 app.post("/addToCart", async (req, res) => {
@@ -301,6 +318,36 @@ app.get("/purchasedCourse/:email", async (req, res) => {
         res.status(500).json({ error: "Server error" });
     }
 });
+
+
+app.get("/wishlistedCourse", async (req, res) => {
+    try {
+        const email = req.query.email;
+        if (!email) {
+            res.json("fail");
+        }
+        const wishListedCourses = await savedCollection.find({ email }).populate('courses');
+        res.json(wishListedCourses);
+    } catch (error) {
+        res.json("fail");
+    }
+});
+
+
+app.post("/removeFromWishlist", async (req, res) => {
+    const { email, courseId } = req.body;
+    try {
+        if (!email || !courseId) {
+            res.json("fail");
+        }
+        await savedCollection.findOneAndDelete({ email: email, courses: courseId });
+        res.json("pass");
+    } catch (e) {
+        console.log(e);
+        res.json("fail");
+    }
+});
+
 
 
 
