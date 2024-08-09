@@ -4,17 +4,25 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { ToastContainer, toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBarsProgress, faBookOpenReader, faHeart, faPlusCircle, faTasks, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faBarsProgress, faPlusCircle, faTasks, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { FaPen } from 'react-icons/fa';
 
 export default function MyAccount() {
     const [cookieVal] = useState(Cookies.get('email'));
-    const url = "https://e-learning-website-server.onrender.com"
+    const url = "https://e-learning-website-server.onrender.com";
+
+    // Data's of User, Purchased course, Saved Course...
     const [data, setData] = useState('');
+    const [purchased, setPurchased] = useState([]);
+    const [wishListed, setWishListed] = useState([]);
+
+    // Views to open tabs
     const [settings, setSettings] = useState(false);
     const [isTeacherApproved, setIsTeacherApproved] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
+
+    // Update data values
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -28,6 +36,8 @@ export default function MyAccount() {
     const [profilePic, setprofilePic] = useState("");
     const [previewImage, setPreviewImage] = useState(null);
 
+
+    // Function to get the user data from server
     const submit = async () => {
         try {
             const res = await axios.post(`${url}/myaccount`, { cookieVal });
@@ -49,6 +59,8 @@ export default function MyAccount() {
         }
     };
 
+
+    // Function to update the user data
     const handleFormSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
@@ -81,6 +93,8 @@ export default function MyAccount() {
         }
     };
 
+
+    // Handle change for input values to update user data
     const handleInputChange = async (e) => {
         const { name, value } = e.target;
         setFormData((prevState) => ({
@@ -112,8 +126,61 @@ export default function MyAccount() {
         submit();
     }, [cookieVal]);
 
+
+
+    // Function to get the purchased course data for each user seperatly
+    const fetchPurchasedCourse = async () => {
+        const cookie = Cookies.get('email');
+        try {
+            const response = await axios.get(`${url}/purchasedCourse/${cookie}`);
+            if (Array.isArray(response.data)) {
+                setPurchased(response.data);
+            } else {
+                setPurchased([]);
+            }
+        } catch (error) {
+            setPurchased([]);
+        }
+    };
+
+
+    // Function to get the wishlisted course data for each user seperatly
+    const fetchWishlistedCourse = async () => {
+        const cookie = Cookies.get("email");
+        try {
+            const response = await axios.get(`${url}/wishlistedCourse`, { params: { email: cookie } });
+            if (Array.isArray(response.data)) {
+                setWishListed(response.data.map((e) => (e.courses)));
+            } else {
+                setWishListed([]);
+            }
+        } catch (error) {
+            toast.error("Failed to fetch cart items");
+        }
+    };
+
+
+
+    const removeWishlistedCourse = async (courseId) => {
+        const email = Cookies.get("email");
+        try {
+            const res = await axios.post(`${url1}/removeFromWishlist`, { email: email, courseId: courseId });
+            if (res.data === "pass") {
+                fetchWishlistedCourse();
+            }
+        } catch (e) {
+            toast.error("Something went wrong!");
+        }
+    };
+
+    useEffect(() => {
+        fetchPurchasedCourse();
+        fetchWishlistedCourse();
+    }, []);
+
     return (
         <div>
+            {/* Profile update popup section */}
             {settings && (
                 <form className='z-20 fixed top-0 left-0 right-0 bottom-0 bg-custom-radial overflow-auto' onSubmit={handleFormSubmit}>
                     <section className='text-gray-600 body-font relative'>
@@ -126,9 +193,9 @@ export default function MyAccount() {
                                     <div className='w-full py-4 flex items-end justify-between border-b'>
                                         <div className='flex'>
                                             {previewImage ? (
-                                                <img className="rounded-full object-cover w-16 h-16" src={previewImage} alt="Profile" />
+                                                <img className="rounded-full object-cover w-16 h-16 border" src={previewImage} alt="Profile" />
                                             ) : (
-                                                <img className="rounded-full object-cover w-16 h-16" src={`${url}/${data.profilePicPath}`} alt="Profile" />
+                                                <img className="rounded-full object-cover w-16 h-16 border" src={`${url}/${data.profilePicPath}`} alt="Profile" />
                                             )}
                                         </div>
                                         <div>
@@ -225,11 +292,16 @@ export default function MyAccount() {
             )}
 
             <div className="min-h-screen text-center bg-gray-100 p-4 bg-custom-radial">
-                <h1 className='sm:text-4xl text-3xl mb-4 font-bold text-gray-900'>Hello 👋 {data.name}</h1>
-                <p className='mb-4'>Your Email ID : {cookieVal}</p>
-                <div className='w-full flex justify-center items-center'>
-                    <div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className='relative w-20 flex justify-center items-center mb-4' onClick={() => setSettings(true)}>
-                        <img className="rounded-full object-cover w-20 h-20" src={`${url}/${data.profilePicPath}`} alt='Profile'/>
+                <h1 className="sm:text-4xl text-3xl mb-4 font-bold text-gray-900">Hello 👋 {data.name}</h1>
+                <p className="mb-4">Your Email ID: {cookieVal}</p>
+                <div className="w-full flex justify-center items-center">
+                    <div
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}
+                        className="relative w-20 flex justify-center items-center mb-4 cursor-pointer"
+                        onClick={() => setSettings(true)}
+                    >
+                        <img className="rounded-full object-cover w-20 h-20 border" src={`${url}/${data.profilePicPath}`} alt="Profile" />
                         {isHovered && (
                             <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center rounded-full">
                                 <button className="font-bold uppercase text-sm text-gray-100"><FaPen /></button>
@@ -238,40 +310,96 @@ export default function MyAccount() {
                     </div>
                 </div>
                 <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {data.role === 'Teacher' && isTeacherApproved ==='approved' ? (
+                <div className="flex flex-col gap-4">
+                    {data.role === 'Teacher' && isTeacherApproved === 'approved' ? (
                         <>
-                            <Link to='/addCourse' className="bg-custom-radial-1 py-6 rounded-lg text-center shadow">
-                                <FontAwesomeIcon icon={faPlusCircle} className='text-3xl lg:text-5xl' />
-                                <h2 className='title-font font-medium text-lg lg:text-2xl mt-4 text-gray-900'>Add Course</h2>
-                            </Link>
-                            <Link to='/updateCourseViewPage' className="bg-custom-radial-1 p-6 rounded-lg text-center shadow">
-                                <FontAwesomeIcon icon={faTasks} className='text-3xl lg:text-5xl' />
-                                <h2 className='title-font font-medium text-lg lg:text-2xl mt-4 text-gray-900'>Manage Course</h2>
-                            </Link>
-                            <Link to='/StudentDetails' className="bg-custom-radial-1 p-6 rounded-lg text-center shadow">
-                                <FontAwesomeIcon icon={faUsers} className='text-3xl lg:text-5xl' />
-                                <h2 className='title-font font-medium text-lg lg:text-2xl mt-4 text-gray-900'>Student Details</h2>
-                            </Link>
+                            <div className='w-full grid grid-cols-1 lg:grid-cols-3 gap-8 mt-10'>
+                                <Link to="/addCourse" className="bg-custom-radial-1 p-6 rounded-lg text-center shadow">
+                                    <FontAwesomeIcon icon={faPlusCircle} className="text-3xl lg:text-5xl" />
+                                    <h2 className="title-font font-medium text-lg lg:text-2xl mt-4 text-gray-900">Add Course</h2>
+                                </Link>
+                                <Link to="/updateCourseViewPage" className="bg-custom-radial-1 p-6 rounded-lg text-center shadow">
+                                    <FontAwesomeIcon icon={faTasks} className="text-3xl lg:text-5xl" />
+                                    <h2 className="title-font font-medium text-lg lg:text-2xl mt-4 text-gray-900">Manage Course</h2>
+                                </Link>
+                                <Link to="/StudentDetails" className="bg-custom-radial-1 p-6 rounded-lg text-center shadow">
+                                    <FontAwesomeIcon icon={faUsers} className="text-3xl lg:text-5xl" />
+                                    <h2 className="title-font font-medium text-lg lg:text-2xl mt-4 text-gray-900">Student Details</h2>
+                                </Link>
+                            </div>
                         </>
                     ) : (
                         <>
-                            <Link to='/purchased' className="bg-custom-radial-1 p-6 rounded-lg text-center shadow">
-                                <FontAwesomeIcon icon={faBookOpenReader} className='text-3xl lg:text-5xl' />
-                                <h2 className='title-font font-medium text-lg lg:text-2xl mt-4 text-gray-900'>Purchased Course</h2>
-                            </Link>
-                            <Link to='/' className="bg-custom-radial-1 p-6 rounded-lg text-center shadow">
-                                <FontAwesomeIcon icon={faHeart} className='text-3xl lg:text-5xl' />
-                                <h2 className='title-font font-medium text-lg lg:text-2xl mt-4 text-gray-900'>Wishlist</h2>
-                            </Link>
-                            <Link to='/' className="bg-custom-radial-1 p-6 rounded-lg text-center shadow">
-                                <FontAwesomeIcon icon={faBarsProgress} className='text-3xl lg:text-5xl' />
-                                <h2 className='title-font font-medium text-lg lg:text-2xl mt-4 text-gray-900'>Your Progress</h2>
-                            </Link>
+                            <div className='lg:flex gap-x-5'>
+                                <div className="w-full lg:w-1/2 bg-custom-radial-1 flex flex-col justify-center h-screen mt-6 rounded-xl shadow-xl">
+                                    {purchased.length > 0 ? (
+                                        <div className="h-full overflow-auto">
+                                            <h1 className="sm:text-3xl text-3xl font-bold text-center title-font p-4 text-gray-900">My Learnings</h1>
+                                            <div className="flex flex-wrap m-4">
+                                                {purchased.map((course, index) => (
+                                                    <div key={index} className="lg:w-1/2 p-4 scale-95 my-4 w-full rounded-lg shadow-md">
+                                                        <div className="flex flex-col font-sans">
+                                                            <a className="flex relative h-48 justify-center rounded overflow-hidden">
+                                                                <img className="object-cover w-full h-full block" src={course.img || 'default-image-url'} alt={course.name} />
+                                                            </a>
+                                                            <div className="mt-4 mb-4 flex flex-col">
+                                                                <h3 className="text-gray-500 text-xs font-bold tracking-widest mb-1">Type: {course.type}</h3>
+                                                                <h3 className="text-gray-900 tracking-widest mb-1 text-lg font-semibold">{course.name}</h3>
+                                                                <p className="mt-1 font-semibold">Language: {course.language}</p>
+                                                                <p className="mt-1 font-semibold">Creator: {course.creator}</p>
+                                                            </div>
+                                                            <div className="flex justify-between">
+                                                                <button className="text-gray-100 bg-gray-900 border-0 py-2 px-5 rounded-lg hover:border-gray-600">Continue...</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="flex justify-center items-center text-3xl font-bold min-h-screen">
+                                            <h1>Oops! Not yet purchased</h1>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="w-full lg:w-1/2 bg-custom-radial-1 flex flex-col justify-center h-screen mt-6 rounded-xl shadow-xl">
+                                    {wishListed.length > 0 ? (
+                                        <div className="h-full overflow-auto">
+                                            <h1 className="sm:text-3xl text-3xl font-bold text-center title-font p-4 text-gray-900">Wishlist</h1>
+                                            <div className="flex flex-wrap m-4">
+                                                {wishListed.map((course, index) => (
+                                                    <div key={index} className="lg:w-1/2 p-4 scale-95 my-4 w-full rounded-lg shadow-md">
+                                                        <div className="flex flex-col font-sans">
+                                                            <a className="flex relative h-48 justify-center rounded overflow-hidden">
+                                                                <img className="object-cover w-full h-full block" src={course.img || 'default-image-url'} alt={course.name} />
+                                                            </a>
+                                                            <div className="mt-4 mb-4 flex flex-col">
+                                                                <h3 className="text-gray-500 text-xs font-bold tracking-widest mb-1">Type: {course.type}</h3>
+                                                                <h3 className="text-gray-900 tracking-widest mb-1 text-lg font-semibold">{course.name}</h3>
+                                                                <p className="mt-1 font-semibold">Language: {course.language}</p>
+                                                                <p className="mt-1 font-semibold">Creator: {course.creator}</p>
+                                                            </div>
+                                                            <div className="flex gap-x-4">
+                                                                <Link to={`/singleViewPage/${course._id}`} className="text-gray-100 bg-gray-900 border-0 py-2 px-5 rounded-lg hover:border-gray-600">View</Link>
+                                                                <button onClick={() => removeWishlistedCourse(course._id)} className="text-gray-100 bg-red-700 border-0 py-2 px-5 rounded-lg hover:border-gray-600">Remove</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="flex justify-center items-center text-3xl font-bold min-h-screen">
+                                            <h1>Oops! You didn't save any course.</h1>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         </>
                     )}
                 </div>
             </div>
+
             <ToastContainer />
         </div>
     );
